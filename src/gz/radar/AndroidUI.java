@@ -148,7 +148,6 @@ public class AndroidUI {
             @Override
             public void run() {
                 editText.setText(text);
-                editText.requestFocusFromTouch();
             }
         };
         Thread currentThread = Thread.currentThread();
@@ -161,7 +160,8 @@ public class AndroidUI {
         Runnable sendAction = new Runnable() {
             @Override
             public void run() {
-                editText.performAccessibilityAction(EditorInfo.IME_ACTION_SEARCH, null);
+            	editText.onEditorAction(EditorInfo.IME_ACTION_SEARCH);
+                //editText.performAccessibilityAction(EditorInfo.IME_ACTION_SEARCH, null);
             }
         };
         if (currentThread.getId() <= 2) {
