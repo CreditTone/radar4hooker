@@ -1,0 +1,16 @@
+*.iml
+classes
+bin
+sources.txt
+*.pro
+build*
+libs/
+*.DS_Store
+.idea/
+.classpath
+.project
+.settings/
+target/
+logs/
+data/doc/
+data/test/

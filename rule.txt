@@ -1,0 +1,3 @@
+rule okhttp3.** gz.okhttp3.@1
+rule okio.** gz.okio.@1
+rule fi.iki.elonen.** gz.httpserver.@1
