@@ -16,6 +16,7 @@ public class  AndroidApkField {
     private int viewId;
     private Object value;
     private String objectId;
+    private boolean fromExtends;
 
     public AndroidApkField(String fieldName, Class fieldClass, boolean isView, int viewId, Object value, String objectId) {
         this.fieldName = fieldName;
@@ -26,7 +27,16 @@ public class  AndroidApkField {
         this.objectId = objectId;
     }
 
-    public String getFieldName() {
+    public AndroidApkField fromExtends(boolean fromExtends) {
+		this.fromExtends = fromExtends;
+		return this;
+	}
+
+	public boolean isFromExtends() {
+		return fromExtends;
+	}
+
+	public String getFieldName() {
         return fieldName;
     }
 
@@ -110,6 +120,7 @@ public class  AndroidApkField {
 
     public String toString() {
         String toString = "name:" + fieldName;
+        toString += "\tfromExtends:" + fromExtends;
         String type = type();
         toString += "\ttype:" + type;
         if (isView) {
