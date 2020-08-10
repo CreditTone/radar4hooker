@@ -2,6 +2,9 @@ package gz.util;
 
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.TextView;
 
 public class XView {
@@ -127,7 +130,7 @@ public class XView {
 		return null;
 	}
 	
-	public Object getOnItemClickListener() {
+	public OnItemClickListener getOnItemClickListener() {
 		try {
 			return X.getField(view, "mOnItemClickListener");
 		}catch(Exception e) {
@@ -135,7 +138,7 @@ public class XView {
 		return null;
 	}
 	
-	public Object getOnItemLongClickListener() {
+	public OnItemLongClickListener getOnItemLongClickListener() {
 		try {
 			return X.getField(view, "mOnItemLongClickListener");
 		}catch(Exception e) {
@@ -143,7 +146,7 @@ public class XView {
 		return null;
 	}
 	
-	public Object getOnItemSelectedListener() {
+	public OnItemSelectedListener getOnItemSelectedListener() {
 		try {
 			return X.getField(view, "mOnItemSelectedListener");
 		}catch(Exception e) {

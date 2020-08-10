@@ -1,8 +1,10 @@
 package gz.radar;
 
 import android.app.Activity;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ActivityInfo extends ObjectInfo {
@@ -14,8 +16,21 @@ public class ActivityInfo extends ObjectInfo {
 
     public ActivityInfo(Activity activity) throws IllegalAccessException {
         super(activity);
-        List<AndroidApkField> fields = new ArrayList<>();
         title = activity.getTitle().toString();
+        if (activity instanceof FragmentActivity) {
+        	FragmentActivity fragmentActivity = (FragmentActivity) activity;
+        	FragmentManager fm = fragmentActivity.getSupportFragmentManager();
+        	List<Fragment> fragments = fm.getFragments();
+        	if (fragments != null) {
+        		int i = 0;
+        		for (Fragment fragment : fragments) {
+        			String virtualVarName = "mFragment_"+i;
+        			String objectId = calculatObjectId(fragment, virtualVarName);
+        			addAndroidApkField(new AndroidApkField(virtualVarName, fragment.getClass(), false, -1, fragment, objectId));
+        			i++;
+        		}
+        	}
+        }
     }
 
     public boolean isOnTop() {

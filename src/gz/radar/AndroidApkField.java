@@ -3,19 +3,21 @@ package gz.radar;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+
+import java.lang.reflect.TypeVariable;
 import java.util.Collection;
 import java.util.Map;
 
 public class  AndroidApkField {
 
     private String fieldName;
-    private String fieldClass;
+    private Class fieldClass;
     private boolean isView;
     private int viewId;
     private Object value;
     private String objectId;
 
-    public AndroidApkField(String fieldName, String fieldClass, boolean isView, int viewId, Object value, String objectId) {
+    public AndroidApkField(String fieldName, Class fieldClass, boolean isView, int viewId, Object value, String objectId) {
         this.fieldName = fieldName;
         this.fieldClass = fieldClass;
         this.isView = isView;
@@ -30,14 +32,6 @@ public class  AndroidApkField {
 
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
-    }
-
-    public String getFieldClass() {
-        return fieldClass;
-    }
-
-    public void setFieldClass(String fieldClass) {
-        this.fieldClass = fieldClass;
     }
 
     public boolean isView() {
@@ -73,27 +67,41 @@ public class  AndroidApkField {
     }
 
     private String type() {
-        if (!fieldClass.startsWith("java.lang.")) {
-            return fieldClass;
+    	String fieldClassNameString = fieldClass.getName();
+        if (!fieldClassNameString.startsWith("java.lang.")) {
+            return fieldClassNameString;
         }
-        if (fieldClass.equals("java.lang.Long")) {
+        if (fieldClassNameString.equals("java.lang.Long")) {
             return "long";
-        }else if (fieldClass.equals("java.lang.Integer")) {
+        }else if (fieldClassNameString.equals("java.lang.Integer")) {
             return "int";
-        }else if (fieldClass.equals("java.lang.Double")) {
+        }else if (fieldClassNameString.equals("java.lang.Double")) {
             return "double";
-        }else if (fieldClass.equals("java.lang.Boolean")) {
+        }else if (fieldClassNameString.equals("java.lang.Boolean")) {
             return "boolean";
-        }else if (fieldClass.equals("java.lang.Character")) {
+        }else if (fieldClassNameString.equals("java.lang.Character")) {
             return "char";
-        }else if (fieldClass.equals("java.lang.Short")) {
+        }else if (fieldClassNameString.equals("java.lang.Short")) {
             return "short";
-        }else if (fieldClass.equals("java.lang.Float")) {
+        }else if (fieldClassNameString.equals("java.lang.Float")) {
             return "float";
-        }else if (fieldClass.equals("java.lang.Byte")) {
+        }else if (fieldClassNameString.equals("java.lang.Byte")) {
             return "byte";
         }
-        return fieldClass;
+        TypeVariable[] typeVariables = fieldClass.getTypeParameters();
+        if (typeVariables != null && typeVariables.length > 0) {
+        	String resultString = fieldClassNameString +"<";
+        	for (int i = 0; i < typeVariables.length; i++ ) {
+        		TypeVariable typeVariable = typeVariables[i];
+        		resultString += typeVariable.getName();
+        		if (i < typeVariables.length - 1) {
+        			resultString += ",";
+        		}
+        	}
+        	resultString += ">";
+        	return resultString;
+        }
+        return fieldClassNameString;
     }
 
     public String toLine() {
@@ -107,7 +115,7 @@ public class  AndroidApkField {
         if (isView) {
             toString += "\tviewId:" + viewId;
         }
-        if (value != null && type.contains(".")) {
+        if (objectId != null && value != null && type.contains(".")) {
             toString += "\tobjectId:" + objectId;
         }
         if (value instanceof Collection) {
@@ -129,4 +137,5 @@ public class  AndroidApkField {
         }
         return toString;
     }
+    
 }

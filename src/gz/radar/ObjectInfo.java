@@ -7,8 +7,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import gz.radar.ClassRadar.RadarClassResult;
 
 public class ObjectInfo {
@@ -40,35 +44,45 @@ public class ObjectInfo {
 
             Object field = declaredField.get(obj);
             String fieldName = declaredField.getName();
-            String fieldClass = declaredField.getType().getName();
             boolean isView = field != null && (field instanceof View);
             int viewId = 0;
             if (isView) {
                 viewId = ((View)field).getId();
             }
             String objectId = calculatObjectId(field, fieldName);
-            fields.add(new AndroidApkField(fieldName, fieldClass, isView, viewId, field, objectId));
+            fields.add(new AndroidApkField(fieldName, declaredField.getType(), isView, viewId, field, objectId));
         }
         androidApkFields = new AndroidApkField[fields.size()];
         androidApkFields = fields.toArray(androidApkFields);
     }
 
     public String calculatObjectId(Object field, String fieldName) {
+    	if (field == null 
+    			|| field instanceof String 
+    			|| field instanceof Integer 
+    			|| field instanceof java.lang.Long 
+    			|| field instanceof java.lang.Double 
+    			|| field instanceof java.lang.Boolean
+    			|| field instanceof java.lang.Character
+    			|| field instanceof java.lang.Short
+    			|| field instanceof java.lang.Float
+    			|| field instanceof java.lang.Byte) {
+    		return null;
+    	}
         Object value = null;
         String objectId = null;
-        if (field != null) {
-            if (field instanceof Collection || field instanceof Map) {
-                value = field;
-            }else if (field instanceof TextView) {
-                value = ((TextView)field).getText().toString();
-            } else {
-                value = field;
-            }
-            objectId = String.valueOf((Math.abs(field.hashCode() + fieldName.hashCode()) % 65535 + fieldName.hashCode() % 100));
-            RadarProperties.cacheObject(obj.hashCode(), objectId, value);
+        if (field instanceof Collection || field instanceof Map) {
+            value = field;
+        }else if (field instanceof TextView) {
+            value = ((TextView)field).getText().toString();
+        } else {
+            value = field;
         }
+        objectId = String.valueOf((Math.abs(field.hashCode() + fieldName.hashCode()) % 65535 + fieldName.hashCode() % 100));
+        RadarProperties.cacheObject(obj.hashCode(), objectId, value);
         return objectId;
     }
+    
 
     public String getName() {
         return name;
@@ -140,5 +154,18 @@ public class ObjectInfo {
         String[] returnArray = new String[methods.size()];
         methods.toArray(returnArray);
         return returnArray;
+    }
+    
+    protected AndroidApkField[] androidApkFieldsFromExtends;
+    
+    private Field[] getFields() {
+    	Set<Field> fields = new LinkedHashSet<>(); 
+    	Class<?> objClass = obj.getClass();
+    	Field[] declaredFields = objClass.getDeclaredFields();
+    	for (int i = 0;declaredFields != null && i < declaredFields.length; i++) {
+    		fields.add(declaredFields[i]);
+		}
+    	
+    	
     }
 }
