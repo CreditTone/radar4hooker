@@ -141,7 +141,7 @@ public class  AndroidApkField {
             if (value instanceof JSONObject || value instanceof JSONArray || value instanceof String || value instanceof Integer || value instanceof Long || value instanceof Float || value instanceof Double || value instanceof Boolean || value instanceof Short || value instanceof Byte || value instanceof Character) {
                 toString += value;
             }else{
-                toString +=  "";//"hashcode(" + value.hashCode() + ")";
+                toString +=  "" + value.hashCode();//"hashcode(" + value.hashCode() + ")";
             }
         }else {
             toString += "null";

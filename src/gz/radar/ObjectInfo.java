@@ -39,35 +39,26 @@ public class ObjectInfo {
         if (isView) {
             viewId = ((View)fieldObject).getId();
         }
-        String objectId = calculatObjectId(field, fieldName);
+        String objectId = calculatObjectId(fieldObject, fieldName);
         Class fieldType = fieldObject!= null ? fieldObject.getClass():field.getType();
         return new AndroidApkField(fieldName, fieldType, isView, viewId, fieldObject, objectId).fromExtends(fromExtends);
     }
 
-    public String calculatObjectId(Object field, String fieldName) {
-    	if (field == null 
-    			|| field instanceof String 
-    			|| field instanceof Integer 
-    			|| field instanceof java.lang.Long 
-    			|| field instanceof java.lang.Double 
-    			|| field instanceof java.lang.Boolean
-    			|| field instanceof java.lang.Character
-    			|| field instanceof java.lang.Short
-    			|| field instanceof java.lang.Float
-    			|| field instanceof java.lang.Byte) {
+    public String calculatObjectId(Object fieldObject, String fieldName) {
+    	if (fieldObject == null 
+    			|| fieldObject instanceof String 
+    			|| fieldObject instanceof Integer 
+    			|| fieldObject instanceof java.lang.Long 
+    			|| fieldObject instanceof java.lang.Double 
+    			|| fieldObject instanceof java.lang.Boolean
+    			|| fieldObject instanceof java.lang.Character
+    			|| fieldObject instanceof java.lang.Short
+    			|| fieldObject instanceof java.lang.Float
+    			|| fieldObject instanceof java.lang.Byte) {
     		return null;
     	}
-        Object value = null;
-        String objectId = null;
-        if (field instanceof Collection || field instanceof Map) {
-            value = field;
-        }else if (field instanceof TextView) {
-            value = ((TextView)field).getText().toString();
-        } else {
-            value = field;
-        }
-        objectId = String.valueOf((Math.abs(field.hashCode() + fieldName.hashCode()) % 65535 + fieldName.hashCode() % 100));
-        RadarProperties.cacheObject(obj.hashCode(), objectId, value);
+        String objectId = String.valueOf(Math.abs((long)fieldObject.hashCode() + (long)fieldName.hashCode() + (long)obj.hashCode()));
+        RadarProperties.cacheObject(obj.hashCode(), objectId, fieldObject);
         return objectId;
     }
     
