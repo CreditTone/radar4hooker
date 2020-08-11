@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import gz.util.X;
+import gz.util.XLog;
 
 import java.util.List;
 
@@ -14,22 +16,21 @@ public class ActivityInfo extends ObjectInfo {
     private boolean paused;
     private boolean stopped;
 
-    public ActivityInfo(Activity activity) throws IllegalAccessException {
+    public ActivityInfo(Activity activity) throws Exception {
         super(activity);
         title = activity.getTitle().toString();
-        if (activity instanceof FragmentActivity) {
-        	FragmentActivity fragmentActivity = (FragmentActivity) activity;
-        	FragmentManager fm = fragmentActivity.getSupportFragmentManager();
-        	List<Fragment> fragments = fm.getFragments();
-        	if (fragments != null) {
-        		int i = 0;
-        		for (Fragment fragment : fragments) {
-        			String virtualVarName = "mFragment_"+i;
-        			String objectId = calculatObjectId(fragment, virtualVarName);
-        			addAndroidApkField(new AndroidApkField(virtualVarName, fragment.getClass(), false, -1, fragment, objectId));
-        			i++;
-        		}
-        	}
+        try {
+        	Object fm = X.invokeObject(activity, "getSupportFragmentManager");
+        	List fragments = (List) X.invokeObject(fm, "getFragments");
+        	int i = 0;
+    		for (Object fragment : fragments) {
+    			String virtualVarName = "mFragment_"+i;
+    			String objectId = calculatObjectId(fragment, virtualVarName);
+    			addAndroidApkField(new AndroidApkField(virtualVarName, fragment.getClass(), false, -1, fragment, objectId));
+    			i++;
+    		}
+        }catch(Exception e) {
+        	XLog.appendText(e);
         }
     }
 

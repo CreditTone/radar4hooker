@@ -32,13 +32,15 @@ public class X {
             while (clz != null && !clz.getName().equals(Object.class.getName())) {
                 try{
                     foundedMethod = clz.getMethod(method);
-                }catch (NoSuchMethodException e){}
+                }catch (NoSuchMethodException e){
+                }
                 if (foundedMethod != null) {
                     break;
                 }
                 try{
                     foundedMethod = clz.getDeclaredMethod(method);
-                }catch (NoSuchMethodException e){}
+                }catch (NoSuchMethodException e){
+                }
                 if (foundedMethod != null) {
                     break;
                 }
@@ -63,7 +65,7 @@ public class X {
             }
         }
         if (foundedMethod == null) {
-            throw new Exception("The method "+method+" not found.");
+            throw new Exception("The method "+method+" not found in the "+clz+".");
         }
         return foundedMethod;
     }
