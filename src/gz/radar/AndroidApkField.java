@@ -129,10 +129,10 @@ public class  AndroidApkField {
         if (objectId != null && value != null && type.contains(".")) {
             toString += "\tobjectId:" + objectId;
         }
-        if (value instanceof Collection) {
+        if (value != null && value instanceof Collection) {
             Collection collection = (Collection) value;
             toString += "\tsize:" + collection.size();
-        }else if (value instanceof Map) {
+        }else if (value != null && value instanceof Map) {
             Map map = (Map) value;
             toString += "\tsize:" + map.size();
         }

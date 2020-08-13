@@ -112,7 +112,7 @@ public class ObjectInfo {
             for (int i = 0; i < androidApkFields.length; i ++) {
                 fields[i] = androidApkFields[i];
             }
-            fields[androidApkFields.length - 1] = androidApkField;
+            fields[fields.length - 1] = androidApkField;
             this.androidApkFields = fields;
         }
     }
