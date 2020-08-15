@@ -6,7 +6,12 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
+import android.os.Build;
+import android.system.Os;
 import android.view.View;
+import gz.com.alibaba.fastjson.JSONArray;
+import gz.com.alibaba.fastjson.JSONObject;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -17,6 +22,19 @@ import java.util.regex.Pattern;
 
 public class Android {
 
+	public static void checkSelfPermission(String permission) throws Exception {
+		Activity context = Android.getTopActivity();
+		if (context.checkPermission(permission, android.os.Process.myPid(), Os.getuid()) != PackageManager.PERMISSION_GRANTED) {
+			requestPermissions(context, new String[] {permission}, 19021);
+		}
+	}
+	
+	public static void requestPermissions(final Activity activity,
+            final String[] permissions, final int requestCode) {
+        if (Build.VERSION.SDK_INT >= 23) {
+            activity.requestPermissions(permissions, requestCode);
+        }
+    }
 
     public static <T extends Activity> T getTopActivity() throws Exception {
         Class activityThreadClass = Class.forName("android.app.ActivityThread");
@@ -175,6 +193,17 @@ public class Android {
         }
         return activityInfos;
     }
-
-
+    
+    public static String getSignatureInfo() throws Exception {
+    	JSONArray result = new JSONArray();
+    	Application app = getApplication();
+    	PackageManager packageManager = app.getPackageManager();
+    	PackageInfo packageInfo = packageManager.getPackageInfo(app.getPackageName(), PackageManager.GET_SIGNATURES);
+        for (Signature sig : packageInfo.signatures) {
+        	JSONObject item = new JSONObject();
+        	item.put("charsString", sig.toCharsString());
+        	result.add(item);
+        }
+        return result.toJSONString();
+    }
 }
