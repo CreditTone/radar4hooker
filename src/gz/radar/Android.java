@@ -3,15 +3,19 @@ package gz.radar;
 import android.app.Activity;
 import android.app.Application;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Build;
+import android.os.Bundle;
 import android.system.Os;
 import android.view.View;
+import gz.com.alibaba.fastjson.JSON;
 import gz.com.alibaba.fastjson.JSONArray;
 import gz.com.alibaba.fastjson.JSONObject;
+import gz.util.X;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -21,6 +25,43 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class Android {
+	
+	public static String getBundleProfile(Bundle bundle) throws Exception {
+		if (bundle != null) {
+			Object mMap = X.getField(bundle, "mMap");
+			return JSON.toJSONString(mMap);
+		}
+		return "";
+	}
+	
+	public static String getIntentProfile(Intent intent) throws Exception {
+		JSONObject profile = new JSONObject();
+		profile.put("action", intent.getAction());
+		if (X.hasField(intent, "mData")) {
+			Object mData = X.getField(intent, "mData");
+			if (mData != null) {
+				profile.put("data", mData.toString());
+			}
+		}
+		profile.put("type", intent.getType());
+		if (X.hasMehtod(intent, "getIdentifier")) {
+			profile.put("identifier", X.invokeObject(intent, "getIdentifier"));
+		}
+		profile.put("package", intent.getPackage());
+		profile.put("flags", intent.getFlags());
+		profile.put("categories", intent.getCategories());
+		profile.put("type", intent.getType());
+		ComponentName componentName = intent.getComponent();
+		if (componentName != null) {
+			profile.put("component", componentName.getClassName());
+		}
+		Bundle bundle = intent.getExtras();
+		if (bundle != null) {
+			Object mMap = X.getField(bundle, "mMap");
+			profile.put("bundle", mMap);
+		}
+		return profile.toJSONString();
+	}
 
 	public static void checkSelfPermission(String permission) throws Exception {
 		Activity context = Android.getTopActivity();

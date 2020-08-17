@@ -25,7 +25,20 @@ public class X {
         }
         return constructor.newInstance(constructorParams);
     }
-
+    
+    public static boolean hasMehtod(Object obj, String method) {
+    	return hasMehtod(obj, method, null);
+    }
+    
+    public static boolean hasMehtod(Object obj, String method, Class[] paramsClzs) {
+    	try {
+    		Method foundMethod = findMehtod(obj, obj.getClass() , method, paramsClzs);
+        	return foundMethod != null;
+		} catch (Exception e) {
+			return false;
+		}
+    }
+    
     private static Method findMehtod(Object obj, Class clz, String method, Class[] paramsClzs) throws Exception {
         Method foundedMethod = null;
         if (paramsClzs == null || paramsClzs.length == 0) {
@@ -103,6 +116,11 @@ public class X {
             clz = clz.getSuperclass();
         }
         return field;
+    }
+    
+    public static boolean hasField(Object obj, String fieldName) throws Exception {
+    	Field field = findField(obj, obj.getClass() ,fieldName);
+    	return field != null;
     }
 
     public static <T> T getField(Object obj, String fieldName) throws Exception {

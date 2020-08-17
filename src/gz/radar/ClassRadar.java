@@ -1,6 +1,7 @@
 package gz.radar;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,10 +9,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import gz.com.alibaba.fastjson.JSONObject;
 import gz.util.XLog;
 
 public class ClassRadar {
@@ -547,6 +550,44 @@ public class ClassRadar {
         }
         return false;
     }
-
+    
+    
+    public static JSONObject getObjectProfileWithFilter(Object obj, Set<Object> filter) {
+    	JSONObject profile = null;
+    	if (filter == null) {
+    		filter = new HashSet<Object>();
+    	}
+    	if (obj != null) {
+    		profile = new JSONObject();
+    		String className = obj.getClass().getName();
+    		profile.put("className", className);
+    		profile.put("objectHash" , obj.hashCode());
+    		if (className.startsWith("java.") || className.startsWith("javax.") || className.startsWith("android.") || className.startsWith("androidx.")) {
+    			return profile;
+    		}
+    		if (filter.contains(obj)) {
+    			return profile;
+    		}
+    		filter.add(obj);
+    		Field[] fields = obj.getClass().getDeclaredFields();
+    		for (int i = 0; fields != null && i < fields.length; i++) {
+    			Field field = fields[i];
+    			field.setAccessible(true);
+    			try {
+    				Object fieldValue = field.get(obj);
+        			if (fieldValue != null) {
+        				profile.put("field_" + field.getName(), getObjectProfileWithFilter(fieldValue, filter));
+        			}
+    			}catch (Exception e) {
+    				e.printStackTrace();
+				}
+			}
+    	}
+    	return profile;
+    }
+    
+    public static JSONObject getObjectProfile(Object obj) {
+    	return getObjectProfileWithFilter(obj, null);
+    }
 
 }
