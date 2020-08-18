@@ -1,12 +1,13 @@
 package gz.httpserver;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import fi.iki.elonen.NanoHTTPD;
+import gz.httpserver.NanoHTTPD;
 
 public abstract class EmbeddHTTPServer extends NanoHTTPD {
 
@@ -59,4 +60,30 @@ public abstract class EmbeddHTTPServer extends NanoHTTPD {
             return newFixedLengthResponse(stringWriter.toString());
         }
     }
+
+	@Override
+	public void start() throws IOException {
+		// TODO Auto-generated method stub
+		super.start();
+	}
+
+	@Override
+	public void start(int arg0, boolean arg1) throws IOException {
+		// TODO Auto-generated method stub
+		super.start(arg0, arg1);
+	}
+
+	@Override
+	public void start(int timeout) throws IOException {
+		// TODO Auto-generated method stub
+		super.start(timeout);
+	}
+
+	@Override
+	public void stop() {
+		// TODO Auto-generated method stub
+		super.stop();
+	}
+    
+    
 }

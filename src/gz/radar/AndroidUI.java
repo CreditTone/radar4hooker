@@ -5,7 +5,9 @@ import android.app.Application;
 import android.app.Instrumentation;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.os.SystemClock;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -16,16 +18,18 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import gz.com.alibaba.fastjson.JSONArray;
 import gz.com.alibaba.fastjson.JSONObject;
 import gz.radar.Android;
+import gz.util.X;
+import gz.util.XLog;
 
 public class AndroidUI {
 
@@ -95,6 +99,26 @@ public class AndroidUI {
             runnable.run();
         }
     }
+    
+    public static void showToast(final String text) throws Exception {
+    	Android.getTopActivity().runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					Toast.makeText(Android.getApplication(), text, Toast.LENGTH_LONG).show();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+    }
+    
+    public static View getRootViewGroup() throws Exception {
+    	return Android.getTopActivity().getWindow().getDecorView();
+    }
+    
+    
+    
 
     public static View findViewByIdName(String idName) throws Exception {
         Application application = Android.getApplication();
@@ -108,9 +132,34 @@ public class AndroidUI {
 
     public static View findViewById(int id) throws Exception {
         Activity activity = Android.getTopActivity();
-        return activity.findViewById(id);
+        View view = activity.findViewById(id);
+        if (view != null) {
+        	return view;
+        }
+        List fragments = getFragments();
+        for (Object fragment : fragments) {
+        	try {
+				View fragmentView = (View) X.invokeObject(fragment, "getView");
+				view = fragmentView.findViewById(id);
+				if (view != null) {
+		        	return view;
+		        }
+			} catch (Exception e) {
+				XLog.appendText(e);
+			}
+        }
+        return null;
     }
 
+    public static List getFragments() {
+    	try {
+        	Object fm = X.invokeObject(Android.getTopActivity(), "getSupportFragmentManager");
+        	List fragments = (List) X.invokeObject(fm, "getFragments");
+        	return fragments;
+        }catch(Exception e) {
+        }
+    	return null;
+    }
 
     public static boolean clickById(int id) throws Exception {
         View view = findViewById(id);
@@ -393,6 +442,23 @@ public class AndroidUI {
             }
         }
         return null;
+    }
+    
+    public static List<View> findViewsById(View decorView, int id) {
+    	List<View> views = new ArrayList<View>();
+    	if (decorView.getId() == id) {
+        	views.add(decorView);
+        	return views;
+        }
+    	if (decorView instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) decorView;
+            int childCount = viewGroup.getChildCount();
+            for (int i = 0; i < childCount; i++) {
+                View childView = viewGroup.getChildAt(i);
+                views.addAll(findViewsById(childView, id));
+            }
+        }
+    	return views;
     }
 
 }

@@ -10,8 +10,8 @@ jar xvf nanohttpd-2.3.1.jar
 jar xvf okhttp-3.12.6.jar
 jar xvf okio-1.15.0.jar
 rm -rf *.jar
-jar cvf radar.jar .
+jar cvf xradar.jar .
 cd ..
-java -jar jarjar-1.3.jar process rule.txt classes/radar.jar classes/xradar.jar
+#java -jar jarjar-1.3.jar process rule.txt classes/radar.jar classes/xradar.jar
 dx --dex --output=classes/radar.dex classes/xradar.jar
 rm -f classes/radar.jar

@@ -33,6 +33,7 @@ public class ActivityInfo extends ObjectInfo {
         	XLog.appendText(e);
         }
     }
+    
 
     public boolean isOnTop() {
         return onTop;
