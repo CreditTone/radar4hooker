@@ -117,9 +117,6 @@ public class AndroidUI {
     	return Android.getTopActivity().getWindow().getDecorView();
     }
     
-    
-    
-
     public static View findViewByIdName(String idName) throws Exception {
         Application application = Android.getApplication();
         Resources resources =  Android.getApplication().getResources();
@@ -137,16 +134,18 @@ public class AndroidUI {
         	return view;
         }
         List fragments = getFragments();
-        for (Object fragment : fragments) {
-        	try {
-				View fragmentView = (View) X.invokeObject(fragment, "getView");
-				view = fragmentView.findViewById(id);
-				if (view != null) {
-		        	return view;
-		        }
-			} catch (Exception e) {
-				XLog.appendText(e);
-			}
+        if (fragments != null) {
+        	for (Object fragment : fragments) {
+            	try {
+    				View fragmentView = (View) X.invokeObject(fragment, "getView");
+    				view = fragmentView.findViewById(id);
+    				if (view != null) {
+    		        	return view;
+    		        }
+    			} catch (Exception e) {
+    				XLog.appendText(e);
+    			}
+            }
         }
         return null;
     }
