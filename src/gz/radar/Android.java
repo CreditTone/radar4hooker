@@ -12,9 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.system.Os;
 import android.view.View;
-import gz.com.alibaba.fastjson.JSON;
-import gz.com.alibaba.fastjson.JSONArray;
-import gz.com.alibaba.fastjson.JSONObject;
 import gz.util.X;
 
 import java.lang.reflect.Field;
@@ -23,6 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 public class Android {
 	
