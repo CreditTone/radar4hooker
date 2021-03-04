@@ -1,13 +1,16 @@
-package gz.radar;
+package gz.radar.objects;
 
 import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import gz.radar.AndroidApkField;
 import gz.util.X;
 import gz.util.XLog;
 
 import java.util.List;
+
+import com.alibaba.fastjson.serializer.ObjectSerializer;
 
 public class ActivityInfo extends ObjectInfo {
 
@@ -25,7 +28,7 @@ public class ActivityInfo extends ObjectInfo {
         	int i = 0;
     		for (Object fragment : fragments) {
     			String virtualVarName = "mFragment_"+i;
-    			String objectId = calculatObjectId(fragment, virtualVarName);
+    			String objectId = ObjectsStore.storeObject(fragment);
     			addAndroidApkField(new AndroidApkField(virtualVarName, fragment.getClass(), false, -1, fragment, objectId));
     			i++;
     		}

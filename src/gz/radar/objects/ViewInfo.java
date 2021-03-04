@@ -1,4 +1,4 @@
-package gz.radar;
+package gz.radar.objects;
 
 import android.view.View;
 import android.view.View.OnDragListener;
@@ -8,7 +8,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.TextView;
-
+import gz.radar.AndroidApkField;
 import gz.util.XView;
 
 public class ViewInfo extends ObjectInfo {
@@ -30,81 +30,81 @@ public class ViewInfo extends ObjectInfo {
 		this.isVisible = xView.isVisible();
 		View.OnClickListener onClickListener = xView.getOnClickListener();
 		if (onClickListener != null) {
-			String objectId = calculatObjectId(onClickListener, "mOnClickListener");
+			String objectId = ObjectsStore.storeObject(onClickListener);
 			addAndroidApkField(new AndroidApkField("mOnClickListener", onClickListener.getClass(), false, -1, onClickListener,
 					objectId));
 		}
 		View.OnLongClickListener onLongClickListener = xView.getOnLongClickListener();
 		if (onLongClickListener != null) {
-			String objectId = calculatObjectId(onLongClickListener, "mOnLongClickListener");
+			String objectId = ObjectsStore.storeObject(onLongClickListener);
 			addAndroidApkField(new AndroidApkField("mOnLongClickListener", onLongClickListener.getClass(), false, -1,
 					onLongClickListener, objectId));
 		}
 		View.OnTouchListener mOnTouchListener = xView.getOnTouchListener();
 		if (mOnTouchListener != null) {
-			String objectId = calculatObjectId(mOnTouchListener, "mOnTouchListener");
+			String objectId = ObjectsStore.storeObject(mOnTouchListener);
 			addAndroidApkField(new AndroidApkField("mOnTouchListener", mOnTouchListener.getClass(), false, -1,
 					mOnTouchListener, objectId));
 		}
 		View.OnFocusChangeListener mOnFocusChangeListener = xView.getOnFocusChangeListener();
 		if (mOnFocusChangeListener != null) {
-			String objectId = calculatObjectId(mOnTouchListener, "mOnFocusChangeListener");
+			String objectId = ObjectsStore.storeObject(mOnFocusChangeListener);
 			addAndroidApkField(new AndroidApkField("mOnFocusChangeListener", mOnFocusChangeListener.getClass(), false, -1,
 					mOnFocusChangeListener, objectId));
 		}
 		TextView.OnEditorActionListener mOnEditorActionListener = xView.getOnEditorActionListener();
 		if (mOnEditorActionListener != null) {
-			String objectId = calculatObjectId(mOnEditorActionListener, "mOnEditorActionListener");
+			String objectId = ObjectsStore.storeObject(mOnEditorActionListener);
 			addAndroidApkField(new AndroidApkField("mOnEditorActionListener", mOnEditorActionListener.getClass(), false, -1,
 					mOnFocusChangeListener, objectId));
 		}
 		
 		Object mOnScrollChangeListener = xView.getOnScrollChangeListener();
 		if (mOnScrollChangeListener != null) {
-			String objectId = calculatObjectId(mOnScrollChangeListener, "mOnScrollChangeListener");
+			String objectId = ObjectsStore.storeObject(mOnScrollChangeListener);
 			addAndroidApkField(new AndroidApkField("mOnScrollChangeListener", mOnScrollChangeListener.getClass(), false, -1,
 					mOnScrollChangeListener, objectId));
 		}
 		
 		Object adapter = xView.getAdapter();
 		if (adapter != null) {
-			String objectId = calculatObjectId(adapter, "mAdapter");
+			String objectId = ObjectsStore.storeObject(adapter);
 			addAndroidApkField(new AndroidApkField("mAdapter", adapter.getClass(), false, -1, adapter, objectId));
 		}
 		
 		OnScrollListener onScrollListener = xView.getOnScrollListener();
 		if (onScrollListener != null) {
-			String objectId = calculatObjectId(adapter, "mOnScrollListener");
+			String objectId = ObjectsStore.storeObject(onScrollListener);
 			addAndroidApkField(new AndroidApkField("mOnScrollListener", onScrollListener.getClass(), false, -1, onScrollListener, objectId));
 		}
 		
 		OnHoverListener mOnHoverListener = xView.getOnHoverListener();
-		if (onScrollListener != null) {
-			String objectId = calculatObjectId(mOnHoverListener, "mOnHoverListener");
+		if (mOnHoverListener != null) {
+			String objectId = ObjectsStore.storeObject(mOnHoverListener);
 			addAndroidApkField(new AndroidApkField("mOnHoverListener", mOnHoverListener.getClass(), false, -1, mOnHoverListener, objectId));
 		}
 		
 		OnDragListener mOnDragListener = xView.getOnDragListener();
 		if (mOnDragListener != null) {
-			String objectId = calculatObjectId(mOnDragListener, "mOnDragListener");
+			String objectId = ObjectsStore.storeObject(mOnDragListener);
 			addAndroidApkField(new AndroidApkField("mOnDragListener", mOnDragListener.getClass(), false, -1, mOnDragListener, objectId));
 		}
 		
 		OnItemClickListener mOnItemClickListener = xView.getOnItemClickListener();
 		if (mOnItemClickListener != null) {
-			String objectId = calculatObjectId(mOnItemClickListener, "mOnItemClickListener");
+			String objectId = ObjectsStore.storeObject(mOnItemClickListener);
 			addAndroidApkField(new AndroidApkField("mOnItemClickListener", mOnItemClickListener.getClass(), false, -1, mOnItemClickListener, objectId));
 		}
 		
 		OnItemLongClickListener mOnItemLongClickListener = xView.getOnItemLongClickListener();
 		if (mOnItemLongClickListener != null) {
-			String objectId = calculatObjectId(mOnItemLongClickListener, "mOnItemLongClickListener");
+			String objectId = ObjectsStore.storeObject(mOnItemLongClickListener);
 			addAndroidApkField(new AndroidApkField("mOnItemLongClickListener", mOnItemLongClickListener.getClass(), false, -1, mOnItemLongClickListener, objectId));
 		}
 		
 		OnItemSelectedListener mOnItemSelectedListener = xView.getOnItemSelectedListener();
 		if (mOnItemSelectedListener != null) {
-			String objectId = calculatObjectId(mOnItemSelectedListener, "mOnItemSelectedListener");
+			String objectId = ObjectsStore.storeObject(mOnItemSelectedListener);
 			addAndroidApkField(new AndroidApkField("mOnItemSelectedListener", mOnItemSelectedListener.getClass(), false, -1, mOnItemSelectedListener, objectId));
 		}
 		

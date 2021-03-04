@@ -12,6 +12,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.system.Os;
 import android.view.View;
+import gz.radar.objects.ActivityInfo;
+import gz.radar.objects.ObjectInfo;
+import gz.radar.objects.ObjectsStore;
+import gz.radar.objects.ServiceInfo;
+import gz.radar.objects.ViewInfo;
 import gz.util.X;
 
 import java.lang.reflect.Field;
@@ -136,7 +141,7 @@ public class Android {
     }
 
     public static ObjectInfo getObjectInfo(String objId) throws Exception {
-        Object obj = RadarProperties.getCachedObject(objId);
+        Object obj = ObjectsStore.getObject(objId);
         if (obj == null) {
             return null;
         }
@@ -159,7 +164,7 @@ public class Android {
                 return new ViewInfo(view, idName);
             }
         }
-        View view = (View) RadarProperties.getCachedObject(id);
+        View view = (View) ObjectsStore.getObject(id);
         String idName = "null";
         if (view != null && view.getId() != -1) {
             idName = Android.getApplication().getResources().getResourceEntryName(view.getId());

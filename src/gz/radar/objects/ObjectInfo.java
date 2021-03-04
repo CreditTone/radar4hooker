@@ -1,7 +1,12 @@
-package gz.radar;
+package gz.radar.objects;
 
 import android.view.View;
 import android.widget.TextView;
+import gz.radar.AndroidApkField;
+import gz.radar.ClassRadar;
+import gz.radar.ClassRadar.RadarClassResult;
+import gz.radar.ClassRadar.RadarConstructorMethod;
+import gz.radar.ClassRadar.RadarMethod;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -9,8 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
-import gz.radar.ClassRadar.RadarClassResult;
 
 public class ObjectInfo {
 
@@ -39,27 +42,9 @@ public class ObjectInfo {
         if (isView) {
             viewId = ((View)fieldObject).getId();
         }
-        String objectId = calculatObjectId(fieldObject, fieldName);
+        String objectId = ObjectsStore.storeObject(fieldObject);
         Class fieldType = fieldObject!= null ? fieldObject.getClass():field.getType();
         return new AndroidApkField(fieldName, fieldType, isView, viewId, fieldObject, objectId).fromExtends(fromExtends);
-    }
-
-    public String calculatObjectId(Object fieldObject, String fieldName) {
-    	if (fieldObject == null 
-    			|| fieldObject instanceof String 
-    			|| fieldObject instanceof Integer 
-    			|| fieldObject instanceof java.lang.Long 
-    			|| fieldObject instanceof java.lang.Double 
-    			|| fieldObject instanceof java.lang.Boolean
-    			|| fieldObject instanceof java.lang.Character
-    			|| fieldObject instanceof java.lang.Short
-    			|| fieldObject instanceof java.lang.Float
-    			|| fieldObject instanceof java.lang.Byte) {
-    		return null;
-    	}
-        String objectId = String.valueOf(Math.abs((long)fieldObject.hashCode() + (long)fieldName.hashCode() + (long)obj.hashCode()));
-        RadarProperties.cacheObject(obj.hashCode(), objectId, fieldObject);
-        return objectId;
     }
     
 

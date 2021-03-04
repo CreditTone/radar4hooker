@@ -15,7 +15,8 @@ rm -rf *.jar
 jar cvf merge.jar .
 cd ..
 java -jar jarjar-1.3.jar process rule.txt classes/merge.jar classes/xradar.jar
-rm merge.jar
+rm classes/merge.jar
+#替换你本地的dx路径
 alias dx=/Users/stephen/Library/Android/sdk/build-tools/30.0.3/dx
 dx --dex --output=classes/radar.dex classes/xradar.jar
 echo "xradar.jar 用于你的爬虫工程."

@@ -1,4 +1,4 @@
-package gz.radar;
+package gz.radar.objects;
 
 import android.app.Service;
 
