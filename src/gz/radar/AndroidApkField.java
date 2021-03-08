@@ -1,8 +1,6 @@
 package gz.radar;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
+import gz.util.XPretty;
 
 import java.lang.reflect.TypeVariable;
 import java.util.Collection;
@@ -17,14 +15,20 @@ public class  AndroidApkField {
     private Object value;
     private String objectId;
     private boolean fromExtends;
+    private boolean isStatic;
 
     public AndroidApkField(String fieldName, Class fieldClass, boolean isView, int viewId, Object value, String objectId) {
+    	this(fieldName, fieldClass, isView, viewId, value, objectId, false);
+    }
+    
+    public AndroidApkField(String fieldName, Class fieldClass, boolean isView, int viewId, Object value, String objectId, boolean isStatic) {
         this.fieldName = fieldName;
         this.fieldClass = fieldClass;
         this.isView = isView;
         this.viewId = viewId;
         this.value = value;
         this.objectId = objectId;
+        this.isStatic = isStatic;
     }
 
     public AndroidApkField fromExtends(boolean fromExtends) {
@@ -75,6 +79,8 @@ public class  AndroidApkField {
     public void setObjectId(String objectId) {
         this.objectId = objectId;
     }
+    
+    
 
     private String type() {
     	String fieldClassNameString = fieldClass.getName();
@@ -120,6 +126,7 @@ public class  AndroidApkField {
 
     public String toString() {
         String toString = "name:" + fieldName;
+        toString += "\tstatic:" + isStatic;
         toString += "\tfromExtends:" + fromExtends;
         String type = type();
         toString += "\ttype:" + type;
@@ -137,15 +144,7 @@ public class  AndroidApkField {
             toString += "\tsize:" + map.size();
         }
         toString += "\tvalue:" ;
-        if (value != null) {
-            if (value instanceof JSONObject || value instanceof JSONArray || value instanceof String || value instanceof Integer || value instanceof Long || value instanceof Float || value instanceof Double || value instanceof Boolean || value instanceof Short || value instanceof Byte || value instanceof Character) {
-                toString += value;
-            }else{
-                toString +=  "" + value.hashCode();//"hashcode(" + value.hashCode() + ")";
-            }
-        }else {
-            toString += "null";
-        }
+        toString += XPretty.getPrettyString(value);
         return toString;
     }
     

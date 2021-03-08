@@ -1,19 +1,14 @@
 package gz.radar.objects;
 
 import android.view.View;
-import android.widget.TextView;
 import gz.radar.AndroidApkField;
 import gz.radar.ClassRadar;
 import gz.radar.ClassRadar.RadarClassResult;
-import gz.radar.ClassRadar.RadarConstructorMethod;
-import gz.radar.ClassRadar.RadarMethod;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 public class ObjectInfo {
 
@@ -33,7 +28,7 @@ public class ObjectInfo {
         initAndroidApkFields();
     }
     
-    public AndroidApkField makeAndroidApkField(Field field, boolean fromExtends) throws IllegalArgumentException, IllegalAccessException {
+    public AndroidApkField makeAndroidApkField(Field field, boolean fromExtends, boolean isStatic) throws IllegalArgumentException, IllegalAccessException {
     	field.setAccessible(true);
     	Object fieldObject = field.get(obj);
         String fieldName = field.getName();
@@ -44,7 +39,7 @@ public class ObjectInfo {
         }
         String objectId = ObjectsStore.storeObject(fieldObject);
         Class fieldType = fieldObject!= null ? fieldObject.getClass():field.getType();
-        return new AndroidApkField(fieldName, fieldType, isView, viewId, fieldObject, objectId).fromExtends(fromExtends);
+        return new AndroidApkField(fieldName, fieldType, isView, viewId, fieldObject, objectId, isStatic).fromExtends(fromExtends);
     }
     
 
@@ -126,29 +121,23 @@ public class ObjectInfo {
     	Field[] declaredFields = objClass.getDeclaredFields();
     	for (int i = 0;declaredFields != null && i < declaredFields.length; i++) {
     		Field field = declaredFields[i];
-			if (Modifier.isStatic(field.getModifiers())) {
-				continue;
-			}
-			androidApkFields.add(makeAndroidApkField(field, false));
+			boolean isStatic = Modifier.isStatic(field.getModifiers());
+			androidApkFields.add(makeAndroidApkField(field, false, isStatic));
 		}
     	Class<?> objSuperClass = objClass.getSuperclass();
     	if (!objClass.equals(Object.class) && !objSuperClass.equals(Object.class)) {
     		Field[] superClassFields = objSuperClass.getFields();
     		for (int i = 0; superClassFields != null && i < superClassFields.length; i++) {
     			Field field = superClassFields[i];
-    			if (Modifier.isStatic(field.getModifiers())) {
-    				continue;
-    			}
-    			androidApkFields.add(makeAndroidApkField(field, true));
+    			boolean isStatic = Modifier.isStatic(field.getModifiers());
+    			androidApkFields.add(makeAndroidApkField(field, true, isStatic));
 			}
     		Field[] superClassDeclaredFields = objSuperClass.getDeclaredFields();
     		for (int i = 0;superClassDeclaredFields != null && i < superClassDeclaredFields.length; i++) {
     			Field field = superClassDeclaredFields[i];
-    			if (Modifier.isStatic(field.getModifiers())) {
-    				continue;
-    			}
+    			boolean isStatic = Modifier.isStatic(field.getModifiers());
     			if (Modifier.isProtected(field.getModifiers())) {
-    				androidApkFields.add(makeAndroidApkField(field, true));
+    				androidApkFields.add(makeAndroidApkField(field, true, isStatic));
     			}
     		}
     	}
