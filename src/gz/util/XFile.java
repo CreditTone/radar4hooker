@@ -14,8 +14,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import gz.com.alibaba.fastjson.JSON;
+import gz.com.alibaba.fastjson.JSONObject;
 import gz.radar.Android;
 
 public class XFile {

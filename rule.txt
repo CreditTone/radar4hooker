@@ -1,3 +1,2 @@
 rule okhttp3.** gz.okhttp3.@1
 rule okio.** gz.okio.@1
-rule com.alibaba.** gz.com.alibaba.@1

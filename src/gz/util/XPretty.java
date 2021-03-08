@@ -3,7 +3,7 @@ package gz.util;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
-import com.alibaba.fastjson.JSON;
+import gz.com.alibaba.fastjson.JSON;
 
 public class XPretty {
 

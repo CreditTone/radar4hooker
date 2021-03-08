@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.alibaba.fastjson.JSONObject;
+import gz.com.alibaba.fastjson.JSONObject;
 import gz.util.XLog;
 
 public class ClassRadar {

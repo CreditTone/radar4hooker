@@ -1,16 +1,12 @@
 package gz.radar.objects;
 
 import android.app.Activity;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import gz.radar.AndroidApkField;
 import gz.util.X;
 import gz.util.XLog;
 
 import java.util.List;
 
-import com.alibaba.fastjson.serializer.ObjectSerializer;
 
 public class ActivityInfo extends ObjectInfo {
 
