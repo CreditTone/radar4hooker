@@ -38,7 +38,8 @@ public class ObjectInfo {
             viewId = ((View)fieldObject).getId();
         }
         String objectId = ObjectsStore.storeObject(fieldObject);
-        Class fieldType = fieldObject!= null ? fieldObject.getClass():field.getType();
+        //Class fieldType = fieldObject!= null ? fieldObject.getClass():field.getType();
+        Class fieldType = field.getType();
         return new AndroidApkField(fieldName, fieldType, isView, viewId, fieldObject, objectId, isStatic).fromExtends(fromExtends);
     }
     
