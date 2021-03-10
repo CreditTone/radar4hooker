@@ -131,12 +131,18 @@ public class ObjectInfo {
     		for (int i = 0; superClassFields != null && i < superClassFields.length; i++) {
     			Field field = superClassFields[i];
     			boolean isStatic = Modifier.isStatic(field.getModifiers());
+    			if (isStatic) {
+    				continue;
+    			}
     			androidApkFields.add(makeAndroidApkField(field, true, isStatic));
 			}
     		Field[] superClassDeclaredFields = objSuperClass.getDeclaredFields();
     		for (int i = 0;superClassDeclaredFields != null && i < superClassDeclaredFields.length; i++) {
     			Field field = superClassDeclaredFields[i];
     			boolean isStatic = Modifier.isStatic(field.getModifiers());
+    			if (isStatic) {
+    				continue;
+    			}
     			if (Modifier.isProtected(field.getModifiers())) {
     				androidApkFields.add(makeAndroidApkField(field, true, isStatic));
     			}

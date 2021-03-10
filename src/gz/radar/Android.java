@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.system.Os;
 import android.view.View;
 import gz.radar.objects.ActivityInfo;
+import gz.radar.objects.ExplainObjects;
 import gz.radar.objects.ObjectInfo;
 import gz.radar.objects.ObjectsStore;
 import gz.radar.objects.ServiceInfo;
@@ -22,8 +23,11 @@ import gz.util.X;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import gz.com.alibaba.fastjson.JSON;
@@ -146,6 +150,37 @@ public class Android {
             return null;
         }
         return new ObjectInfo(obj);
+    }
+    
+    public static ExplainObjects object2Explain(String objId) throws Exception {
+    	ExplainObjects explainObjs = new ExplainObjects();
+        Object obj = ObjectsStore.getObject(objId);
+        if (obj == null) {
+            return null;
+        }
+        if (obj instanceof Collection) {
+        	Collection<Object> collection = (Collection<Object>) obj;
+        	int index = 0;
+        	for (Object item : collection) {
+        		explainObjs.put(String.valueOf(index), new ObjectInfo(item));
+        		index ++;
+        	}
+        }else if (obj instanceof Map) {
+        	Map map = (Map) obj;
+        	Set keys = map.keySet();
+        	for (Object key : keys) {
+        		Object item = map.get(key);
+        		if (item != null) {
+        			explainObjs.put(key.toString(), new ObjectInfo(item));
+        		}
+        	}
+        }else if (obj instanceof Object[]) {
+        	Object[] arr = (Object[]) obj;
+        	for (int i = 0; i < arr.length; i++) {
+        		explainObjs.put(String.valueOf(i), new ObjectInfo(arr[i]));
+			}
+        }
+        return explainObjs;
     }
 
     public static ViewInfo getViewInfo(String id) throws Exception {
