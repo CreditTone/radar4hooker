@@ -155,14 +155,14 @@ public class Android {
     public static ExplainObjects object2Explain(String objId) throws Exception {
     	ExplainObjects explainObjs = new ExplainObjects();
         Object obj = ObjectsStore.getObject(objId);
-        if (obj == null) {
-            return null;
+        if (obj == null || obj instanceof ObjectInfo) {
+            return explainObjs;
         }
         if (obj instanceof Collection) {
         	Collection<Object> collection = (Collection<Object>) obj;
         	int index = 0;
         	for (Object item : collection) {
-        		explainObjs.put(String.valueOf(index), new ObjectInfo(item));
+        		explainObjs.put(String.valueOf(index), item);
         		index ++;
         	}
         }else if (obj instanceof Map) {
@@ -171,13 +171,13 @@ public class Android {
         	for (Object key : keys) {
         		Object item = map.get(key);
         		if (item != null) {
-        			explainObjs.put(key.toString(), new ObjectInfo(item));
+        			explainObjs.put(key.toString(), item);
         		}
         	}
         }else if (obj instanceof Object[]) {
         	Object[] arr = (Object[]) obj;
         	for (int i = 0; i < arr.length; i++) {
-        		explainObjs.put(String.valueOf(i), new ObjectInfo(arr[i]));
+        		explainObjs.put(String.valueOf(i), arr[i]);
 			}
         }
         return explainObjs;
