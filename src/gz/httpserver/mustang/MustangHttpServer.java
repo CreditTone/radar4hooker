@@ -29,7 +29,11 @@ public class MustangHttpServer extends EmbeddHTTPServer {
         String urlPath = checkPath(path);
         for (MustangController mustangController : mustangControllers) {
             if (mustangController.path.equals(urlPath)) {
-                return mustangController.callOnResponse(embeddHTTPParams);
+            	try {
+            		return mustangController.callOnResponse(embeddHTTPParams);
+				} catch (Exception e) {
+					return "{exception:\""+e.toString()+"'.\"}";
+				}
             }
         }
         return "{msg:\"Not found the path '"+path+"'.\"}";
