@@ -33,7 +33,7 @@ public class MustangHttpServer extends EmbeddHTTPServer {
             	try {
             		return mustangController.callOnResponse(embeddHTTPParams);
 				} catch (Exception e) {
-					return XLog.getException(e);
+					return XLog.getPrettyHtml(XLog.getException(e));
 				}
             }
         }
