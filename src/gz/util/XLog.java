@@ -95,7 +95,6 @@ public class XLog {
     			builder.append("<p>");
     			builder.append(lines[i]);
     			builder.append("</p>");
-    			builder.append("</br>");
 			}
     	}
     	builder.append("</body>");
