@@ -3,6 +3,7 @@ package gz.httpserver.mustang;
 import java.util.ArrayList;
 import java.util.List;
 import gz.httpserver.EmbeddHTTPServer;
+import gz.util.XLog;
 
 public class MustangHttpServer extends EmbeddHTTPServer {
 
@@ -32,7 +33,7 @@ public class MustangHttpServer extends EmbeddHTTPServer {
             	try {
             		return mustangController.callOnResponse(embeddHTTPParams);
 				} catch (Exception e) {
-					return "{exception:\""+e.toString()+"'.\"}";
+					return XLog.getException(e);
 				}
             }
         }

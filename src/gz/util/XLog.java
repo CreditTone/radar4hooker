@@ -85,4 +85,22 @@ public class XLog {
         }
     }
     
+    public static String getPrettyHtml(String str) {
+    	StringBuilder builder = new StringBuilder();
+    	builder.append("<html>");
+    	builder.append("<body>");
+    	if (str != null) {
+    		String[] lines = str.split("\n");
+    		for (int i = 0; i < lines.length; i++) {
+    			builder.append("<p>");
+    			builder.append(lines[i]);
+    			builder.append("</p>");
+    			builder.append("</br>");
+			}
+    	}
+    	builder.append("</body>");
+    	builder.append("</html>");
+    	return builder.toString();
+    }
+    
 }
