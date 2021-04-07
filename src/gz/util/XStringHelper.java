@@ -2,9 +2,13 @@ package gz.util;
 
 import java.util.List;
 
-public final class XStringChecker {
+public final class XStringHelper {
+	
+	public static final String subStringWithKeyword(String str, String keyword) {
+		return str;
+	}
 
-	public final boolean contains(String str, List<String> keywords) {
+	public static final boolean contains(String str, List<String> keywords) {
 		if (keywords == null || keywords.isEmpty()) {
 			return false;
 		}
