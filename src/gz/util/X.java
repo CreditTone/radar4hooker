@@ -3,6 +3,7 @@ package gz.util;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 public class X {
 
@@ -132,6 +133,20 @@ public class X {
             field.setAccessible(true);
         }
         return (T) field.get(obj);
+    }
+    
+    public static void setField(Object obj, String fieldName, Object value) throws Exception {
+        Field field = findField(obj, obj.getClass() ,fieldName);
+        if (field == null) {
+            throw new NullPointerException("The field "+fieldName+" not found.");
+        }
+        if (!field.isAccessible()) {
+            field.setAccessible(true);
+        }
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+        field.set(obj, value); 
     }
    
 
