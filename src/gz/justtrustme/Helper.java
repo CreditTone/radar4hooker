@@ -37,6 +37,45 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class Helper {
+	
+	//Create a SingleClientConnManager that trusts everyone!
+    public static ClientConnectionManager getSCCM() {
+
+        KeyStore trustStore;
+        try {
+
+            trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            trustStore.load(null, null);
+
+            SSLSocketFactory sf = new TrustAllSSLSocketFactory(trustStore);
+            sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+
+            SchemeRegistry registry = new SchemeRegistry();
+            registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+            registry.register(new Scheme("https", sf, 443));
+
+            ClientConnectionManager ccm = new SingleClientConnManager(null, registry);
+
+            return ccm;
+
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    //This function determines what object we are dealing with.
+    public static ClientConnectionManager getCCM(Object o, HttpParams params) {
+
+        String className = o.getClass().getSimpleName();
+
+        if (className.equals("SingleClientConnManager")) {
+            return getSCCM();
+        } else if (className.equals("ThreadSafeClientConnManager")) {
+            return getTSCCM(params);
+        }
+
+        return null;
+    }
 
 	//This function creates a ThreadSafeClientConnManager that trusts everyone!
     public static ClientConnectionManager getTSCCM(HttpParams params) {
