@@ -23,6 +23,9 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.security.KeyManagementException;
@@ -37,137 +40,134 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class Helper {
-	
-	//Create a SingleClientConnManager that trusts everyone!
-    public static ClientConnectionManager getSCCM() {
 
-        KeyStore trustStore;
-        try {
+	// Create a SingleClientConnManager that trusts everyone!
+	public static ClientConnectionManager getSCCM() {
 
-            trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-            trustStore.load(null, null);
+		KeyStore trustStore;
+		try {
 
-            SSLSocketFactory sf = new TrustAllSSLSocketFactory(trustStore);
-            sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+			trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+			trustStore.load(null, null);
 
-            SchemeRegistry registry = new SchemeRegistry();
-            registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-            registry.register(new Scheme("https", sf, 443));
+			SSLSocketFactory sf = new TrustAllSSLSocketFactory(trustStore);
+			sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 
-            ClientConnectionManager ccm = new SingleClientConnManager(null, registry);
+			SchemeRegistry registry = new SchemeRegistry();
+			registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+			registry.register(new Scheme("https", sf, 443));
 
-            return ccm;
+			ClientConnectionManager ccm = new SingleClientConnManager(null, registry);
 
-        } catch (Exception e) {
-            return null;
-        }
-    }
-    
-    //This function determines what object we are dealing with.
-    public static ClientConnectionManager getCCM(Object o, HttpParams params) {
+			return ccm;
 
-        String className = o.getClass().getSimpleName();
+		} catch (Exception e) {
+			return null;
+		}
+	}
 
-        if (className.equals("SingleClientConnManager")) {
-            return getSCCM();
-        } else if (className.equals("ThreadSafeClientConnManager")) {
-            return getTSCCM(params);
-        }
+	// This function determines what object we are dealing with.
+	public static ClientConnectionManager getCCM(Object o, HttpParams params) {
 
-        return null;
-    }
+		String className = o.getClass().getSimpleName();
 
-	//This function creates a ThreadSafeClientConnManager that trusts everyone!
-    public static ClientConnectionManager getTSCCM(HttpParams params) {
+		if (className.equals("SingleClientConnManager")) {
+			return getSCCM();
+		} else if (className.equals("ThreadSafeClientConnManager")) {
+			return getTSCCM(params);
+		}
 
-        KeyStore trustStore;
-        try {
+		return null;
+	}
 
-            trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-            trustStore.load(null, null);
+	// This function creates a ThreadSafeClientConnManager that trusts everyone!
+	public static ClientConnectionManager getTSCCM(HttpParams params) {
 
-            SSLSocketFactory sf = new TrustAllSSLSocketFactory(trustStore);
-            sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+		KeyStore trustStore;
+		try {
 
-            SchemeRegistry registry = new SchemeRegistry();
-            registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-            registry.register(new Scheme("https", sf, 443));
+			trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+			trustStore.load(null, null);
 
-            ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, registry);
+			SSLSocketFactory sf = new TrustAllSSLSocketFactory(trustStore);
+			sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 
-            return ccm;
+			SchemeRegistry registry = new SchemeRegistry();
+			registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+			registry.register(new Scheme("https", sf, 443));
 
-        } catch (Exception e) {
-            return null;
-        }
-    }
-    
-    private static KeyManager[] createKeyManagers(final KeyStore keystore, final String password)
-            throws KeyStoreException, NoSuchAlgorithmException, UnrecoverableKeyException {
-            if (keystore == null) {
-                throw new IllegalArgumentException("Keystore may not be null");
-            }
-            KeyManagerFactory kmfactory = KeyManagerFactory.getInstance(
-                KeyManagerFactory.getDefaultAlgorithm());
-            kmfactory.init(keystore, password != null ? password.toCharArray(): null);
-            return kmfactory.getKeyManagers(); 
-        }
-    
-    public static boolean reInitSSLSocketFactory(javax.net.ssl.SSLSocketFactory sslFactory,
-    		String algorithm, 
-            final KeyStore keystore, 
-            final String keystorePassword, 
-            final KeyStore __truststore,
-            final SecureRandom random,
-            final HostNameResolver __nameResolver) throws Exception {
-    	 KeyManager[] keymanagers = null;
-         TrustManager[] trustmanagers = null;
+			ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, registry);
 
-         if (keystore != null) {
-             keymanagers = createKeyManagers(keystore, keystorePassword);
-         }
+			return ccm;
 
-         trustmanagers = new TrustManager[]{new ImSureItsLegitTrustManager()};
-         SSLContext sslcontext = SSLContext.getInstance(algorithm);
-         X.setField(sslFactory, "sslcontext", sslcontext);
-         sslcontext.init(keymanagers, trustmanagers, random);
-         javax.net.ssl.SSLSocketFactory socketfactory = sslcontext.getSocketFactory();
-         X.setField(sslFactory, "socketfactory", socketfactory);
-    	return true;
-    }
-    
-    public static javax.net.ssl.SSLSocketFactory getEmptySSLFactory() {
-        try {
-            SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(null, new TrustManager[]{new ImSureItsLegitTrustManager()}, null);
-            return sslContext.getSocketFactory();
-        } catch (NoSuchAlgorithmException e) {
-            return null;
-        } catch (KeyManagementException e) {
-            return null;
-        }
-    }
-    
-    public static javax.net.ssl.TrustManager[] replaceGetTrustManagers(javax.net.ssl.TrustManagerFactory trustManagerFactory, javax.net.ssl.TrustManager[] originResults) throws ClassNotFoundException {
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	private static KeyManager[] createKeyManagers(final KeyStore keystore, final String password)
+			throws KeyStoreException, NoSuchAlgorithmException, UnrecoverableKeyException {
+		if (keystore == null) {
+			throw new IllegalArgumentException("Keystore may not be null");
+		}
+		KeyManagerFactory kmfactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+		kmfactory.init(keystore, password != null ? password.toCharArray() : null);
+		return kmfactory.getKeyManagers();
+	}
+
+	public static boolean reInitSSLSocketFactory(javax.net.ssl.SSLSocketFactory sslFactory, String algorithm,
+			final KeyStore keystore, final String keystorePassword, final KeyStore __truststore,
+			final SecureRandom random, final HostNameResolver __nameResolver) throws Exception {
+		KeyManager[] keymanagers = null;
+		TrustManager[] trustmanagers = null;
+
+		if (keystore != null) {
+			keymanagers = createKeyManagers(keystore, keystorePassword);
+		}
+
+		trustmanagers = new TrustManager[] { new ImSureItsLegitTrustManager() };
+		SSLContext sslcontext = SSLContext.getInstance(algorithm);
+		X.setField(sslFactory, "sslcontext", sslcontext);
+		sslcontext.init(keymanagers, trustmanagers, random);
+		javax.net.ssl.SSLSocketFactory socketfactory = sslcontext.getSocketFactory();
+		X.setField(sslFactory, "socketfactory", socketfactory);
+		return true;
+	}
+
+	public static javax.net.ssl.SSLSocketFactory getEmptySSLFactory() {
+		try {
+			SSLContext sslContext = SSLContext.getInstance("TLS");
+			sslContext.init(null, new TrustManager[] { new ImSureItsLegitTrustManager() }, null);
+			return sslContext.getSocketFactory();
+		} catch (NoSuchAlgorithmException e) {
+			return null;
+		} catch (KeyManagementException e) {
+			return null;
+		}
+	}
+
+	public static javax.net.ssl.TrustManager[] replaceGetTrustManagers(
+			javax.net.ssl.TrustManagerFactory trustManagerFactory, javax.net.ssl.TrustManager[] originResults)
+			throws ClassNotFoundException {
 		if (hasTrustManagerImpl()) {
 			Class<?> cls = Class.forName("com.android.org.conscrypt.TrustManagerImpl");
 			if (originResults.length > 0 && cls.isInstance(originResults[0]))
-                return originResults;
+				return originResults;
 		}
-    	return new TrustManager[]{new ImSureItsLegitTrustManager()};
-    }
-    
-    public static javax.net.ssl.TrustManager[] getImSureTrustManagers() {
-    	return new TrustManager[]{new ImSureItsLegitTrustManager()};
-    }
-    
-    public static boolean hasTrustManagerImpl() {
-        try {
-            Class.forName("com.android.org.conscrypt.TrustManagerImpl");
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
-        return true;
-    }
+		return new TrustManager[] { new ImSureItsLegitTrustManager() };
+	}
+
+	public static javax.net.ssl.TrustManager[] getImSureTrustManagers() {
+		return new TrustManager[] { new ImSureItsLegitTrustManager() };
+	}
+
+	public static boolean hasTrustManagerImpl() {
+		try {
+			Class.forName("com.android.org.conscrypt.TrustManagerImpl");
+		} catch (ClassNotFoundException e) {
+			return false;
+		}
+		return true;
+	}
 
 }
