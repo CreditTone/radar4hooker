@@ -8,7 +8,7 @@ import java.lang.reflect.Parameter;
 public class OkHttp3FakeFinder {
 	
 	// public static final class Builder
-	public static String[] matchOkHttpClientBuilderCheck(String className) {
+	public static String[] okHttpClientBuilderCheck(String className) {
 		if (className.startsWith("java.") || className.startsWith("android") || className.startsWith("com")
 				|| className.startsWith("[") || !className.contains("$")) {
 			return null;
@@ -94,14 +94,14 @@ public class OkHttp3FakeFinder {
 				//返回混淆的类名和方法名
 				return new String[] {className, sslSocketFactoryMethodName, sslSocketFactoryMethod2Name};
 			}
-		} catch (ClassNotFoundException e) {
+		} catch (Exception e) {
 		}
 		
 		return null;
 	}
 
 	// public final class okhttp3.CertificatePinner
-	public static String[] matchOk3CertificatePinnerCheck(String className) {
+	public static String[] okHttpCertificatePinnerCheck(String className) {
 		if (isInvalidOkHttpClass(className)) {
 			return null;
 		}
@@ -114,14 +114,18 @@ public class OkHttp3FakeFinder {
 		String checkMethodName = null;
 		try {
 			Class<?> clz = Class.forName(className);
+			if (clz.isInterface()) {
+				return null;
+			}
 			if (!Modifier.isFinal(clz.getModifiers())) {
 				return null;
 			}
 			Method[] methods = clz.getDeclaredMethods();
 			for (int i = 0; i < methods.length; i++) {
 				Method method = methods[i];
+				int parameterCount = method.getParameters().length;
 				int modifier = method.getModifiers();
-				if (method.getParameterCount() == 1) {
+				if (parameterCount == 1) {
 					Parameter parameter = method.getParameters()[0];
 					if ("java.security.cert.Certificate".equals(parameter.getType().getName())
 							&& Modifier.isStatic(modifier) && method.getReturnType().equals(String.class)) {
@@ -132,7 +136,7 @@ public class OkHttp3FakeFinder {
 							&& !method.getReturnType().equals(Void.TYPE)) {
 						sameSha1Method = true;
 					}
-				} else if (method.getParameterCount() == 2) {
+				} else if (parameterCount == 2) {
 					Parameter parameter0 = method.getParameters()[0];
 					Parameter parameter1 = method.getParameters()[1];
 					if ("java.lang.String".equals(parameter0.getType().getName())
@@ -143,7 +147,7 @@ public class OkHttp3FakeFinder {
 					}
 				}
 			}
-		} catch (ClassNotFoundException e) {
+		} catch (Exception e) {
 		}
 		if (sameCheckMethod && samePinMethod && sameSha1Method) {
 			return new String[] { className, checkMethodName };
@@ -157,7 +161,7 @@ public class OkHttp3FakeFinder {
 	}
 
 	// public final class OkHostnameVerifier implements HostnameVerifier
-	public static String[] matchOk3OkHostnameVerifierVerify(String className) {
+	public static String[] okHttpOkHostnameVerifierVerify(String className) {
 		if (isInvalidOkHttpClass(className)) {
 			return null;
 		}
@@ -180,16 +184,17 @@ public class OkHttp3FakeFinder {
 			Method[] methods = clz.getDeclaredMethods();
 			for (int i = 0; i < methods.length; i++) {
 				Method method = methods[i];
+				int parameterCount = method.getParameters().length;
 				int modifier = method.getModifiers();
 				method.getReturnType().getName();
-				if (method.getParameterCount() == 1) {
+				if (parameterCount == 1) {
 					Parameter parameter = method.getParameters()[0];
 					if ("java.security.cert.X509Certificate".equals(parameter.getType().getName())
 							&& Modifier.isStatic(modifier)
 							&& method.getReturnType().getName().equals("java.util.List")) {
 						same_AllSubjectAltNames_Method = true;
 					}
-				} else if (method.getParameterCount() == 2) {
+				} else if (parameterCount == 2) {
 					Parameter parameter0 = method.getParameters()[0];
 					Parameter parameter1 = method.getParameters()[1];
 					if ("java.lang.String".equals(parameter0.getType().getName())
@@ -206,7 +211,7 @@ public class OkHttp3FakeFinder {
 					}
 				}
 			}
-		} catch (ClassNotFoundException e) {
+		} catch (Exception e) {
 		}
 		if (sameVerify_Str_SSLSession_Method && sameVerify_Str_X509Certificate_Method
 				&& same_AllSubjectAltNames_Method) {

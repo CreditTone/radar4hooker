@@ -17,7 +17,7 @@ cd ..
 java -jar jarjar-1.3.jar process rule.txt classes/merge.jar classes/xradar.jar
 rm classes/merge.jar
 #替换你本地的dx路径
-alias dx=/home/stephen/Android/Sdk/build-tools/30.0.1/dx
+alias dx=$ANDROID_HOME/build-tools/30.0.3/dx
 dx --dex --output=classes/radar.dex classes/xradar.jar
 echo "xradar.jar 用于你的爬虫工程."
 echo "radar.dex用于替换hooker根目录下的radar.dex"

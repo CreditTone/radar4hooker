@@ -1,5 +1,6 @@
 *.iml
 classes
+makeDex4linux*
 bin
 sources.txt
 *.pro
