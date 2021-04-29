@@ -161,8 +161,8 @@ public class OkHttp3FakeFinder {
 	}
 
 	// public final class OkHostnameVerifier implements HostnameVerifier
-	public static String[] okHttpOkHostnameVerifierVerify(String className) {
-		if (isInvalidOkHttpClass(className)) {
+	public static String[] okHttpOkHostnameVerifierVerify(Class clz) {
+		if (isInvalidOkHttpClass(clz.getName())) {
 			return null;
 		}
 		// public boolean verify(String str, SSLSession sSLSession)
@@ -177,16 +177,14 @@ public class OkHttp3FakeFinder {
 
 		String sameVerify_Str_X509Certificate_MethodName = null;
 		try {
-			Class<?> clz = Class.forName(className);
 			if (!Modifier.isFinal(clz.getModifiers())) {
 				return null;
 			}
 			Method[] methods = clz.getDeclaredMethods();
 			for (int i = 0; i < methods.length; i++) {
 				Method method = methods[i];
-				int parameterCount = method.getParameters().length;
+				int parameterCount = method.getParameterTypes().length;
 				int modifier = method.getModifiers();
-				method.getReturnType().getName();
 				if (parameterCount == 1) {
 					Parameter parameter = method.getParameters()[0];
 					if ("java.security.cert.X509Certificate".equals(parameter.getType().getName())
@@ -195,16 +193,16 @@ public class OkHttp3FakeFinder {
 						same_AllSubjectAltNames_Method = true;
 					}
 				} else if (parameterCount == 2) {
-					Parameter parameter0 = method.getParameters()[0];
-					Parameter parameter1 = method.getParameters()[1];
-					if ("java.lang.String".equals(parameter0.getType().getName())
-							&& "javax.net.ssl.SSLSession".equals(parameter1.getType().getName())
+					Class parameter0Clz = method.getParameterTypes()[0];
+					Class parameter1Clz = method.getParameterTypes()[1];
+					if ("java.lang.String".equals(parameter0Clz.getName())
+							&& "javax.net.ssl.SSLSession".equals(parameter1Clz.getName())
 							&& method.getReturnType().equals(boolean.class)) {
 						sameVerify_Str_SSLSession_Method = true;
 						sameVerify_Str_SSLSession_MethodName = method.getName();
 					}
-					if ("java.lang.String".equals(parameter0.getType().getName())
-							&& "java.security.cert.X509Certificate".equals(parameter1.getType().getName())
+					if ("java.lang.String".equals(parameter0Clz.getName())
+							&& "java.security.cert.X509Certificate".equals(parameter1Clz.getName())
 							&& method.getReturnType().equals(boolean.class)) {
 						sameVerify_Str_X509Certificate_Method = true;
 						sameVerify_Str_X509Certificate_MethodName = method.getName();
@@ -215,7 +213,7 @@ public class OkHttp3FakeFinder {
 		}
 		if (sameVerify_Str_SSLSession_Method && sameVerify_Str_X509Certificate_Method
 				&& same_AllSubjectAltNames_Method) {
-			return new String[] { className, sameVerify_Str_SSLSession_MethodName,
+			return new String[] { clz.getName(), sameVerify_Str_SSLSession_MethodName,
 					sameVerify_Str_X509Certificate_MethodName };
 		}
 		return null;
